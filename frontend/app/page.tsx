@@ -8,11 +8,35 @@ export default function Home() {
   >([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState('Google');
+  const [selectedModel, setSelectedModel] = useState('gemini-2.0-flash');
+  const [availableModels, setAvailableModels] = useState<Record<string, any>>(
+    {}
+  );
   const messagesRef = useRef(messages);
 
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
+
+  // Зареди налични модели при стартиране
+  useEffect(() => {
+    const fetchModels = async () => {
+      try {
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL?.replace('/api/chat/stream', '') ||
+          'http://localhost:8000';
+        const response = await fetch(`${apiUrl}/api/models`);
+        const data = await response.json();
+        setAvailableModels(data.models || {});
+        setSelectedCompany(data.current_company || 'Google');
+        setSelectedModel(data.current_model || 'gemini-2.0-flash');
+      } catch (error) {
+        console.error('[FRONTEND LOG] Грешка при зареждане на модели:', error);
+      }
+    };
+    fetchModels();
+  }, []);
 
   const updateLastMessage = (content: string, isStreaming?: boolean) => {
     setMessages((prev) => {
@@ -53,7 +77,11 @@ export default function Home() {
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userInput }),
+        body: JSON.stringify({
+          message: userInput,
+          company: selectedCompany,
+          model: selectedModel,
+        }),
       });
 
       if (!response.ok) throw new Error('Грешка при заявката');
@@ -116,9 +144,10 @@ export default function Home() {
 
               if (json.error) {
                 console.error('[FRONTEND LOG] ГРЕШКА:', json.error);
-                updateLastMessage(`ГРЕШКА: ${json.error}`, false);
+                updateLastMessage(`❌ ГРЕШКА: ${json.error}`, false);
+                setLoading(false);
                 processedChunks.clear();
-                continue;
+                break; // Спри стрийма при грешка
               }
 
               if (json.text) {
@@ -279,7 +308,7 @@ export default function Home() {
 
         {/* Input Area */}
         <div className='border-t border-slate-700 p-6 bg-linear-to-r from-black via-slate-950 to-black rounded-b-xl sm:rounded-b-xl'>
-          <div className='flex gap-3'>
+          <div className='flex gap-3 mb-3'>
             <input
               type='text'
               value={input}
@@ -296,6 +325,46 @@ export default function Home() {
             >
               {loading ? '...' : '→'}
             </button>
+          </div>
+
+          {/* Company Selector */}
+          <div className='flex gap-3'>
+            <select
+              value={selectedCompany}
+              onChange={(e) => {
+                setSelectedCompany(e.target.value);
+                // Автоматично избери първия модел от новата компания
+                const modelsForCompany = availableModels[e.target.value];
+                if (modelsForCompany) {
+                  const firstModelId = Object.keys(modelsForCompany)[0];
+                  setSelectedModel(firstModelId);
+                }
+              }}
+              className='flex-1 px-3 py-2 bg-slate-800 text-white text-sm rounded border border-slate-600 hover:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-600 transition'
+            >
+              {Object.keys(availableModels).map((company) => (
+                <option key={company} value={company}>
+                  {company}
+                </option>
+              ))}
+            </select>
+
+            {/* Model Selector */}
+            <select
+              value={selectedModel}
+              onChange={(e) => setSelectedModel(e.target.value)}
+              className='flex-1 px-3 py-2 bg-slate-800 text-white text-sm rounded border border-slate-600 hover:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-600 transition'
+            >
+              {selectedCompany &&
+                availableModels[selectedCompany] &&
+                Object.entries(availableModels[selectedCompany]).map(
+                  ([modelId, modelInfo]: [string, any]) => (
+                    <option key={modelId} value={modelId}>
+                      {modelInfo.name} - {modelInfo.description}
+                    </option>
+                  )
+                )}
+            </select>
           </div>
         </div>
       </div>
