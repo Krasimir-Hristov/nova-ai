@@ -1,8 +1,24 @@
 """FastAPI server for Nova AI backend."""
 
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import google.generativeai as genai
+from dotenv import load_dotenv
+
+# Зареди .env файл
+load_dotenv()
+
+# Конфигурирай Gemini API
+api_key = os.getenv("GOOGLE_API_KEY")
+genai.configure(api_key=api_key)
+
+# Инициализирай модела
+try:
+    model = genai.GenerativeModel("gemini-2.0-flash")
+except:
+    model = genai.GenerativeModel("gemini-1.5-pro")
 
 app = FastAPI()
 
@@ -29,24 +45,18 @@ def read_root():
 
 @app.post("/api/chat")
 def chat(data: ChatMessage):
-    """Chat endpoint that processes user messages."""
-    user_message = data.message.lower()
-    
-    # Прости разговори за демонстрация
-    responses = {
-        "привет": "Привет! Как мога да ти помогна?",
-        "привет nova": "Здравей! Аз съм NOVA, твоя AI асистент. Как мога да ти помогна?",
-        "як се казваш": "Аз съм NOVA - Nova Open Virtual Assistant. Радвам се да те срещам!",
-        "какво правиш": "Аз съм AI асистент, готова да отговоря на всякакви въпроси и да помогна с различни задачи.",
-        "довиждане": "До скоро! Успех ти желая! 👋",
-        "спасибо": "Много радо! Ако трябва още нещо, просто ми кажи! 😊",
-    }
-    
-    # Поиск на отговор
-    for key, response in responses.items():
-        if key in user_message:
-            return {"response": response}
-    
-    # Default отговор
-    return {"response": f"Интересна мисъл! Ще трябва да мисля повече за това: '{data.message}'"}
+    """Chat endpoint that processes user messages using Gemini API."""
+    try:
+        # Генерирай отговор usando Gemini
+        response = model.generate_content(data.message)
+        
+        return {
+            "response": response.text,
+            "status": "success"
+        }
+    except Exception as e:
+        return {
+            "response": f"Възникна грешка: {str(e)}",
+            "status": "error"
+        }
 
