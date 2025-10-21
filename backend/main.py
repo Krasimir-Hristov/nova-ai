@@ -46,23 +46,6 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.post("/api/chat")
-def chat(data: ChatMessage):
-    """Chat endpoint that processes user messages using Gemini API."""
-    try:
-        # Генерирай отговор usando Gemini
-        response = model.generate_content(data.message)
-        
-        return {
-            "response": response.text,
-            "status": "success"
-        }
-    except Exception as e:
-        return {
-            "response": f"Възникна грешка: {str(e)}",
-            "status": "error"
-        }
-
 
 @app.post("/api/chat/stream")
 async def chat_stream(data: ChatMessage):
