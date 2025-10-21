@@ -52,16 +52,16 @@ export default function Home() {
   };
 
   return (
-    <div className='flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-black via-slate-900 to-slate-800 text-white p-2 sm:p-4'>
+    <div className='flex min-h-screen flex-col items-center justify-center bg-linear-to-br from-black via-slate-900 to-slate-800 text-white p-2 sm:p-4'>
       {/* Субтилен фон */}
       <div className='absolute inset-0 overflow-hidden pointer-events-none opacity-30'>
         <div className='absolute top-1/4 left-1/4 w-96 h-96 bg-blue-900 rounded-full mix-blend-multiply filter blur-3xl opacity-10'></div>
         <div className='absolute bottom-1/4 right-1/4 w-96 h-96 bg-slate-700 rounded-full mix-blend-multiply filter blur-3xl opacity-10'></div>
       </div>
 
-      <div className='relative z-10 w-full max-w-6xl flex flex-col h-screen max-h-screen sm:max-h-[750px] sm:rounded-xl sm:border sm:border-slate-600 sm:shadow-2xl sm:shadow-black/50 bg-gradient-to-b from-black via-slate-900 to-black backdrop-blur-sm'>
+      <div className='relative z-10 w-full max-w-6xl flex flex-col h-screen max-h-screen sm:max-h-[750px] sm:rounded-xl sm:border sm:border-slate-600 sm:shadow-2xl sm:shadow-black/50 bg-linear-to-b from-black via-slate-900 to-black backdrop-blur-sm'>
         {/* Header */}
-        <div className='bg-gradient-to-r from-slate-950 to-slate-800 p-6 rounded-t-xl sm:rounded-t-xl border-b border-slate-700'>
+        <div className='bg-linear-to-r from-slate-950 to-slate-800 p-6 rounded-t-xl sm:rounded-t-xl border-b border-slate-700'>
           <div className='text-center'>
             <h1 className='text-3xl font-bold text-white'>NOVA</h1>
             <p className='text-sm text-slate-400 mt-2 font-medium'>
@@ -114,7 +114,7 @@ export default function Home() {
         </div>
 
         {/* Input Area */}
-        <div className='border-t border-slate-700 p-6 bg-gradient-to-r from-black via-slate-950 to-black rounded-b-xl sm:rounded-b-xl'>
+        <div className='border-t border-slate-700 p-6 bg-linear-to-r from-black via-slate-950 to-black rounded-b-xl sm:rounded-b-xl'>
           <div className='flex gap-3'>
             <input
               type='text'
