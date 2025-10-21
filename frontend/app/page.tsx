@@ -63,10 +63,10 @@ export default function Home() {
         {/* Header */}
         <div className='bg-gradient-to-r from-slate-950 to-slate-800 p-6 rounded-t-xl sm:rounded-t-xl border-b border-slate-700'>
           <div className='text-center'>
-            <h1 className='text-3xl font-bold text-white'>
-              NOVA
-            </h1>
-            <p className='text-sm text-slate-400 mt-2 font-medium'>AI Assistant</p>
+            <h1 className='text-3xl font-bold text-white'>NOVA</h1>
+            <p className='text-sm text-slate-400 mt-2 font-medium'>
+              AI Assistant
+            </p>
             <p className='text-xs text-slate-500 mt-1'>Интелигентен диалог</p>
           </div>
         </div>
@@ -76,9 +76,7 @@ export default function Home() {
           {messages.length === 0 ? (
             <div className='flex items-center justify-center h-full'>
               <div className='text-center'>
-                <p className='text-lg text-slate-300'>
-                  Добре дошъл в NOVA
-                </p>
+                <p className='text-lg text-slate-300'>Добре дошъл в NOVA</p>
                 <p className='text-sm text-slate-500 mt-2'>Начни разговор...</p>
               </div>
             </div>
@@ -86,7 +84,9 @@ export default function Home() {
             messages.map((msg, index) => (
               <div
                 key={index}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${
+                  msg.role === 'user' ? 'justify-end' : 'justify-start'
+                }`}
               >
                 <div
                   className={`max-w-2xl px-5 py-3 rounded-lg transition-all ${
@@ -130,7 +130,7 @@ export default function Home() {
               disabled={loading || !input.trim()}
               className='bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 disabled:opacity-50 text-white font-bold px-8 py-4 rounded-lg transition-all transform hover:scale-105 active:scale-95 cursor-pointer border border-slate-600 hover:border-slate-500 shadow-md shadow-black/50'
             >
-                            {loading ? '...' : '→'}
+              {loading ? '...' : '→'}
             </button>
           </div>
         </div>
