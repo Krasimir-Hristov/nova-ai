@@ -1,9 +1,1 @@
-# Python Backend Git ignore
-__pycache__/
-*.pyc
-.pytest_cache/
-venv/
-dist/
-build/
-*.egg-info/
-.env
+# Backend-specific overrides (most rules inherited from root .gitignore)
