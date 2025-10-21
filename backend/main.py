@@ -19,9 +19,18 @@ genai.configure(api_key=api_key)
 
 # Инициализирай модела
 try:
-    model = genai.GenerativeModel("gemini-2.0-flash")
-except:
-    model = genai.GenerativeModel("gemini-1.5-pro")
+    model = genai.GenerativeModel(
+        "gemini-2.0-flash",
+        generation_config={
+            "temperature": 0.7,
+            "top_p": 0.95,
+            "top_k": 40,
+        }
+    )
+    print("[BACKEND LOG] Модел gemini-2.0-flash успешно инициализиран", file=sys.stdout, flush=True)
+except Exception as e:
+    print(f"[BACKEND ERROR] Грешка при инициализация на gemini-2.0-flash: {str(e)}", file=sys.stdout, flush=True)
+    raise  # Преди инициализацията на приложението
 
 app = FastAPI()
 
