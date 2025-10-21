@@ -1,44 +1,190 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 export default function Home() {
   const [messages, setMessages] = useState<
-    Array<{ role: string; content: string }>
+    Array<{ role: string; content: string; isStreaming?: boolean }>
   >([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const messagesRef = useRef(messages);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+
+  const updateLastMessage = (content: string, isStreaming?: boolean) => {
+    setMessages((prev) => {
+      const updated = [...prev];
+      if (updated[updated.length - 1]?.role === 'assistant') {
+        updated[updated.length - 1].content = content;
+        if (isStreaming !== undefined) {
+          updated[updated.length - 1].isStreaming = isStreaming;
+        }
+      }
+      return updated;
+    });
+  };
+
+  const appendToLastMessage = (text: string) => {
+    const current = [...messagesRef.current];
+    if (current[current.length - 1]?.role === 'assistant') {
+      current[current.length - 1].content += text;
+      setMessages(current);
+    }
+  };
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
 
+    console.log('[FRONTEND LOG] Користувателско съобщение:', input);
+
     // Добави съобщението на потребителя
     const userMessage = { role: 'user', content: input };
     setMessages([...messages, userMessage]);
+    const userInput = input;
     setInput('');
     setLoading(true);
 
     try {
-      // Изпрати заявка към backend
-      const response = await fetch('http://localhost:8000/api/chat', {
+      // Изпрати заявка към backend streaming endpoint
+      const response = await fetch('http://localhost:8000/api/chat/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: userInput }),
       });
 
-      const data = await response.json();
-      const botMessage = {
-        role: 'assistant',
-        content: data.response || 'Извиняванията ми, възникна грешка.',
-      };
-      setMessages((prev) => [...prev, botMessage]);
+      if (!response.ok) throw new Error('Грешка при заявката');
+
+      console.log('[FRONTEND LOG] Започва стрийма...');
+
+      // Добави празното съобщение на бот-а с анимация
+      setMessages((prev) => [
+        ...prev,
+        { role: 'assistant', content: '', isStreaming: true },
+      ]);
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+
+      if (!reader) throw new Error('No reader available');
+
+      let totalText = '';
+      let chunkCount = 0;
+      let buffer = ''; // Буфер за непълни редове
+      let processedChunks = new Set(); // За избегаване на дублирани chunks
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+
+        // Задържи последния непълен ред в буфера
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const trimmedLine = line.trim();
+          if (trimmedLine.startsWith('data: ')) {
+            const jsonString = trimmedLine.slice(6).trim();
+
+            if (!jsonString) continue;
+
+            // Создаваме hash за този JSON chunk
+            const chunkHash = `${jsonString}`;
+
+            try {
+              const json = JSON.parse(jsonString);
+
+              if (json.done) {
+                console.log(
+                  '[FRONTEND LOG] Стрийма завършен. Всичко текст:',
+                  totalText
+                );
+                // Премахни флага за streaming
+                updateLastMessage(
+                  messagesRef.current[messagesRef.current.length - 1]
+                    ?.content || '',
+                  false
+                );
+                processedChunks.clear();
+                continue;
+              }
+
+              if (json.error) {
+                console.error('[FRONTEND LOG] ГРЕШКА:', json.error);
+                updateLastMessage(`ГРЕШКА: ${json.error}`, false);
+                processedChunks.clear();
+                continue;
+              }
+
+              if (json.text) {
+                // Проверяваме дали този точно chunk е обработен
+                if (processedChunks.has(chunkHash)) {
+                  console.log(
+                    `[FRONTEND LOG] Дублиран chunk пропуснат: "${json.text.substring(
+                      0,
+                      50
+                    )}..."`
+                  );
+                  continue;
+                }
+
+                processedChunks.add(chunkHash);
+                chunkCount++;
+                totalText += json.text;
+                console.log(
+                  `[FRONTEND LOG] Chunk #${chunkCount}: "${json.text}"`
+                );
+
+                // Добави текста директно без батчване
+                appendToLastMessage(json.text);
+              }
+            } catch (e) {
+              console.error(
+                '[FRONTEND LOG] Грешка при парсване на JSON:',
+                e,
+                jsonString
+              );
+            }
+          }
+        }
+      }
+
+      // Обработи остатъка в буфера
+      if (buffer.trim().startsWith('data: ')) {
+        const jsonString = buffer.trim().slice(6).trim();
+        if (jsonString) {
+          try {
+            const json = JSON.parse(jsonString);
+            if (json.text) {
+              totalText += json.text;
+              console.log('[FRONTEND LOG] Последния chunk:', json.text);
+              setMessages((prev) => {
+                const updated = [...prev];
+                if (updated[updated.length - 1]?.role === 'assistant') {
+                  updated[updated.length - 1].content += json.text;
+                }
+                return updated;
+              });
+            }
+          } catch (e) {
+            console.error(
+              '[FRONTEND LOG] Грешка при парсване на последния chunk:',
+              e
+            );
+          }
+        }
+      }
     } catch (error) {
+      console.error('[FRONTEND LOG] Грешка при свързване:', error);
       const errorMessage = {
         role: 'assistant',
         content: 'Грешка при свързване с сървъра.',
       };
       setMessages((prev) => [...prev, errorMessage]);
-      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -93,9 +239,26 @@ export default function Home() {
                     msg.role === 'user'
                       ? 'bg-slate-700 text-white rounded-br-none border border-slate-600 shadow-md shadow-black/30'
                       : 'bg-slate-800 text-slate-100 rounded-bl-none border border-slate-700 shadow-md shadow-black/30'
+                  } ${
+                    msg.isStreaming
+                      ? 'bg-linear-to-r from-slate-800 via-slate-750 to-slate-800 animate-pulse'
+                      : ''
                   }`}
                 >
-                  <p className='text-sm leading-relaxed'>{msg.content}</p>
+                  <p className='text-lg leading-relaxed'>{msg.content}</p>
+                  {msg.isStreaming && (
+                    <div className='flex items-center gap-1 mt-2'>
+                      <span className='inline-block w-1 h-1 bg-blue-400 rounded-full animate-bounce'></span>
+                      <span
+                        className='inline-block w-1 h-1 bg-blue-400 rounded-full animate-bounce'
+                        style={{ animationDelay: '0.1s' }}
+                      ></span>
+                      <span
+                        className='inline-block w-1 h-1 bg-blue-400 rounded-full animate-bounce'
+                        style={{ animationDelay: '0.2s' }}
+                      ></span>
+                    </div>
+                  )}
                 </div>
               </div>
             ))
