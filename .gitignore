@@ -1,0 +1,45 @@
+# --- General ---
+.DS_Store
+*.log
+*.swp
+*.swo
+*~
+
+# --- IDEs / Editors ---
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# --- Environment variables ---
+.env
+.env.local
+.env.*.local
+
+# --- Frontend (Next.js / Node.js) ---
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/dist/
+frontend/.turbo/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# --- Backend (Python) ---
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/.pytest_cache/
+backend/dist/
+backend/build/
+backend/*.egg-info/
+
+# --- OS ---
+Thumbs.db
+.DS_Store
+
+# --- Local development ---
+.env.development.local
+.env.test.local
+.env.production.local
