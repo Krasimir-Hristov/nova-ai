@@ -17,10 +17,20 @@ load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=api_key)
 
+# Системен промпт за NOVA
+SYSTEM_PROMPT = """Ти си NOVA - Personal Assistant. Ти си полезен, интелигентен AI асистент.
+Отговаряй на български език. Когато отговаряш:
+- Бъди кратък и ясен
+- Помагай на потребителя по всяко съобщение
+- Ако нямаш информация, кажи честно
+- Бъди услужлив и любезен
+- Можеш да използваш емоджи когато е уместно"""
+
 # Инициализирай модела
 try:
     model = genai.GenerativeModel(
         "gemini-2.0-flash",
+        system_instruction=SYSTEM_PROMPT,
         generation_config={
             "temperature": 0.7,
             "top_p": 0.95,
