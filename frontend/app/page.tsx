@@ -49,7 +49,8 @@ export default function Home() {
 
     try {
       // Изпрати заявка към backend streaming endpoint
-      const response = await fetch('http://localhost:8000/api/chat/stream', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL!;
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userInput }),
