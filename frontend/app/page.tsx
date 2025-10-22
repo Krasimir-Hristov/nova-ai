@@ -103,7 +103,7 @@ export default function Home() {
               onKeyPress={handleKeyPress}
               onStopStream={stopStream}
             />
-            
+
             {/* Controls Row - Font Size & Model Selector */}
             <div className='flex items-center justify-between gap-4 px-2'>
               {/* Font Size Selector */}
