@@ -89,11 +89,18 @@ export const useStreamingChat = ({
                     '[FRONTEND LOG] Стрийма завършен. Всичко текст:',
                     totalText
                   );
-                  updateLastMessage(
-                    messagesRef.current[messagesRef.current.length - 1]
-                      ?.content || '',
-                    false
-                  );
+
+                  // Check if stream was cancelled by backend
+                  if (json.cancelled) {
+                    console.log('[FRONTEND LOG] Backend потвърди отмяна');
+                    updateLastMessage('⏸ Прервано', false);
+                  } else {
+                    updateLastMessage(
+                      messagesRef.current[messagesRef.current.length - 1]
+                        ?.content || '',
+                      false
+                    );
+                  }
                   onStreamComplete?.();
                   return;
                 }
@@ -124,6 +131,8 @@ export const useStreamingChat = ({
         // Не се беспокой за отмяна грешка
         if (error instanceof Error && error.name === 'AbortError') {
           console.log('[FRONTEND LOG] Стрийма отменен');
+          // Replace last message with abort message
+          updateLastMessage('Message cancelled.......', false);
           onAbort?.();
           return;
         }

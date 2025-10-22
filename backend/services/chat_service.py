@@ -93,6 +93,7 @@ class ChatService:
                     file=sys.stdout,
                     flush=True
                 )
+                yield "data: {\"done\": true, \"cancelled\": true}\n\n"
                 break
             
             if chunk.text:
@@ -155,6 +156,7 @@ class ChatService:
                     file=sys.stdout,
                     flush=True
                 )
+                yield "data: {\"done\": true, \"cancelled\": true}\n\n"
                 break
             
             # OpenAI streams chunks with delta.content that can be None

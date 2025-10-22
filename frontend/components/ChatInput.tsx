@@ -32,11 +32,11 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         disabled={!loading && !input.trim()}
         className={`font-bold px-8 py-4 rounded-lg transition-all transform hover:scale-105 active:scale-95 cursor-pointer border shadow-md shadow-black/50 ${
           loading
-            ? 'bg-red-600 hover:bg-red-500 border-red-500 hover:border-red-400 text-white'
+            ? 'bg-slate-700 hover:bg-slate-600 border-slate-600 hover:border-slate-500 text-white'
             : 'bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 disabled:opacity-50 text-white border-slate-600 hover:border-slate-500'
         }`}
       >
-        {loading ? '⏹ Stop' : '→'}
+        {loading ? '⏸ Stop' : '→'}
       </button>
     </div>
   );
