@@ -124,23 +124,37 @@ class ChatService:
         )
         
         chunk_count = 0
+        sent_chunks = set()
         
         for chunk in response:
-            if chunk.choices[0].delta.content:
+            # OpenAI streams chunks with delta.content that can be None
+            content = chunk.choices[0].delta.content if chunk.choices[0].delta else None
+            
+            if content:
                 chunk_count += 1
-                text = chunk.choices[0].delta.content
+                # Use hash of content to avoid exact duplicates
+                content_hash = hash(content)
                 
-                # Send as JSON
-                message_data = json.dumps(
-                    {"text": text},
-                    ensure_ascii=False
-                )
-                print(
-                    f"[BACKEND LOG] Chunk #{chunk_count}: {message_data[:100]}...",
-                    file=sys.stdout,
-                    flush=True
-                )
-                yield f"data: {message_data}\n\n"
+                if content_hash not in sent_chunks:
+                    sent_chunks.add(content_hash)
+                    
+                    # Send as JSON
+                    message_data = json.dumps(
+                        {"text": content},
+                        ensure_ascii=False
+                    )
+                    print(
+                        f"[BACKEND LOG] Chunk #{chunk_count}: {message_data[:100]}...",
+                        file=sys.stdout,
+                        flush=True
+                    )
+                    yield f"data: {message_data}\n\n"
+                else:
+                    print(
+                        f"[BACKEND LOG] Duplicate chunk #{chunk_count} - SKIPPED",
+                        file=sys.stdout,
+                        flush=True
+                    )
         
         print(
             f"[BACKEND LOG] Stream finished. Total {chunk_count} chunks",
