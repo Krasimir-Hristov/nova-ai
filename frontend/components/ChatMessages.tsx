@@ -25,19 +25,19 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
   }, [messages]);
 
   return (
-    <div className='flex-1 overflow-y-auto'>
-      {/* Welcome Message - shows when no messages */}
-      {messages.length === 0 && (
-        <div className='h-full flex items-center justify-center'>
-          <h2 className='font-black bg-linear-to-r from-blue-400 to-blue-700 bg-clip-text text-transparent tracking-[0.4em] leading-[0.9] text-[13vw] whitespace-nowrap text-center'>
-            NOVA
-          </h2>
-        </div>
-      )}
+    <div className='flex-1 overflow-y-auto relative'>
+      {/* NOVA Watermark - Always visible as background */}
+      <div className='fixed inset-0 flex items-center justify-center pointer-events-none z-0'>
+        <h2 className={`font-black bg-linear-to-r from-blue-400 to-blue-700 bg-clip-text text-transparent tracking-[0.4em] leading-[0.9] text-[13vw] whitespace-nowrap text-center transition-opacity duration-500 ${
+          messages.length === 0 ? 'opacity-100' : 'opacity-10'
+        }`}>
+          NOVA
+        </h2>
+      </div>
 
-      {/* Messages - only show when there are messages */}
+      {/* Messages - positioned above watermark */}
       {messages.length > 0 && (
-        <div className='p-6 space-y-4'>
+        <div className='p-6 space-y-4 relative z-10'>
           {messages.map((msg, index) => (
             <div
               key={index}
