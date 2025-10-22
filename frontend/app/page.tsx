@@ -79,33 +79,36 @@ export default function Home() {
   };
 
   return (
-    <div className='min-h-screen bg-linear-to-br from-black via-slate-950 to-black flex items-center justify-center p-4'>
-      <div className='w-full max-w-2xl h-screen md:h-[600px] bg-slate-900 rounded-xl flex flex-col shadow-2xl shadow-black/50 border border-slate-800'>
-        {/* Header */}
-        <Header />
+    <div className='h-screen bg-linear-to-br from-black via-slate-950 to-black flex flex-col'>
+      {/* Header with Model Selector */}
+      <div className='border-b border-slate-700 p-4 bg-linear-to-r from-black via-slate-950 to-black flex justify-center'>
+        <ModelSelector
+          selectedCompany={selectedCompany}
+          selectedModel={selectedModel}
+          companies={getCompanies()}
+          modelsForCompany={getModelsForCompany(selectedCompany)}
+          onCompanyChange={setSelectedCompany}
+          onModelChange={setSelectedModel}
+          compact={true}
+        />
+      </div>
 
+      {/* Main Chat Area */}
+      <div className='flex-1 flex flex-col overflow-hidden'>
         {/* Messages */}
         <ChatMessages messages={messages} />
 
-        {/* Input Area */}
-        <div className='border-t border-slate-700 p-6 bg-linear-to-r from-black via-slate-950 to-black rounded-b-xl sm:rounded-b-xl'>
-          <ChatInput
-            input={input}
-            loading={loading}
-            onInputChange={setInput}
-            onSendMessage={handleSendMessage}
-            onKeyPress={handleKeyPress}
-          />
-
-          {/* Model Selector */}
-          <ModelSelector
-            selectedCompany={selectedCompany}
-            selectedModel={selectedModel}
-            companies={getCompanies()}
-            modelsForCompany={getModelsForCompany(selectedCompany)}
-            onCompanyChange={setSelectedCompany}
-            onModelChange={setSelectedModel}
-          />
+        {/* Input Area - ChatGPT Style */}
+        <div className='border-t border-slate-700 bg-linear-to-r from-black via-slate-950 to-black p-6 flex justify-center'>
+          <div className='w-full max-w-3xl'>
+            <ChatInput
+              input={input}
+              loading={loading}
+              onInputChange={setInput}
+              onSendMessage={handleSendMessage}
+              onKeyPress={handleKeyPress}
+            />
+          </div>
         </div>
       </div>
     </div>

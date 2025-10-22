@@ -14,51 +14,56 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
   }, [messages]);
 
   return (
-    <div className='flex-1 overflow-y-auto p-6 space-y-4'>
-      {messages.length === 0 ? (
-        <div className='flex items-center justify-center h-full'>
-          <div className='text-center'>
-            <p className='text-lg text-slate-300'>Добре дошъл в NOVA</p>
-            <p className='text-sm text-slate-500 mt-2'>Начни разговор...</p>
-          </div>
+    <div className='flex-1 overflow-y-auto'>
+      {/* Welcome Message - shows when no messages */}
+      {messages.length === 0 && (
+        <div className='h-full grid place-items-center'>
+          <h2 className='font-black bg-linear-to-r from-blue-400 to-blue-700 bg-clip-text text-transparent tracking-[0.8em] leading-[0.9] text-[13vw] whitespace-nowrap'>
+            NOVA
+          </h2>
         </div>
-      ) : (
-        messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`flex ${
-              msg.role === 'user' ? 'justify-end' : 'justify-start'
-            }`}
-          >
+      )}
+
+      {/* Messages - only show when there are messages */}
+      {messages.length > 0 && (
+        <div className='p-6 space-y-4'>
+          {messages.map((msg, index) => (
             <div
-              className={`max-w-xs lg:max-w-md px-5 py-3 rounded-lg border shadow-md shadow-black/30 ${
-                msg.role === 'user'
-                  ? 'bg-blue-600 text-white rounded-br-none border-blue-500'
-                  : `bg-slate-800 text-slate-100 rounded-bl-none border-slate-700 ${
-                      msg.isStreaming ? 'animate-pulse' : ''
-                    }`
+              key={index}
+              className={`flex ${
+                msg.role === 'user' ? 'justify-end' : 'justify-start'
               }`}
             >
-              <p className='text-lg leading-relaxed'>{msg.content}</p>
-              {msg.isStreaming && (
-                <div className='flex items-center gap-1 mt-2'>
-                  <span className='inline-block w-1 h-1 bg-blue-400 rounded-full animate-bounce'></span>
-                  <span
-                    className='inline-block w-1 h-1 bg-blue-400 rounded-full animate-bounce'
-                    style={{ animationDelay: '0.1s' }}
-                  ></span>
-                  <span
-                    className='inline-block w-1 h-1 bg-blue-400 rounded-full animate-bounce'
-                    style={{ animationDelay: '0.2s' }}
-                  ></span>
-                </div>
-              )}
+              <div
+                className={`max-w-2xl px-5 py-3 rounded-lg border shadow-md shadow-black/30 ${
+                  msg.role === 'user'
+                    ? 'bg-blue-600 text-white rounded-br-none border-blue-500'
+                    : `bg-slate-800 text-slate-100 rounded-bl-none border-slate-700 ${
+                        msg.isStreaming ? 'animate-pulse' : ''
+                      }`
+                }`}
+              >
+                <p className='text-lg leading-relaxed'>{msg.content}</p>
+                {msg.isStreaming && (
+                  <div className='flex items-center gap-1 mt-2'>
+                    <span className='inline-block w-1 h-1 bg-blue-400 rounded-full animate-bounce'></span>
+                    <span
+                      className='inline-block w-1 h-1 bg-blue-400 rounded-full animate-bounce'
+                      style={{ animationDelay: '0.1s' }}
+                    ></span>
+                    <span
+                      className='inline-block w-1 h-1 bg-blue-400 rounded-full animate-bounce'
+                      style={{ animationDelay: '0.2s' }}
+                    ></span>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))
+          ))}
+          {/* Невидим div за скролиране */}
+          <div ref={messagesEndRef} />
+        </div>
       )}
-      {/* Невидим div за скролиране */}
-      <div ref={messagesEndRef} />
     </div>
   );
 };
