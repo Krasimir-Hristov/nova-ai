@@ -26,28 +26,87 @@ AVAILABLE_MODELS = {
     "Google": {
         "gemini-2.0-flash": {
             "name": "Gemini 2.0 Flash",
-            "description": "Бързо и мощно",
+            "description": "Fast and efficient",
         },
     },
     "OpenAI": {
+        # GPT-5 Series - Latest & Most Powerful
+        "gpt-5-pro": {
+            "name": "GPT-5 Pro",
+            "description": "Most powerful model",
+        },
+        "gpt-5": {
+            "name": "GPT-5",
+            "description": "Latest flagship model",
+        },
+        "gpt-5-mini": {
+            "name": "GPT-5 Mini",
+            "description": "Compact GPT-5 version",
+        },
+        
+        # o-series - Reasoning Models
+        "o3": {
+            "name": "o3",
+            "description": "Advanced reasoning (newest)",
+        },
+        "o1-pro": {
+            "name": "o1 Pro",
+            "description": "Pro reasoning model",
+        },
+        "o1": {
+            "name": "o1",
+            "description": "Reasoning model",
+        },
+        "o3-mini": {
+            "name": "o3 Mini",
+            "description": "Compact reasoning",
+        },
+        "o1-mini": {
+            "name": "o1 Mini",
+            "description": "Light reasoning model",
+        },
+        
+        # GPT-4.1 Series
+        "gpt-4.1": {
+            "name": "GPT-4.1",
+            "description": "Enhanced GPT-4",
+        },
+        "gpt-4.1-mini": {
+            "name": "GPT-4.1 Mini",
+            "description": "Compact GPT-4.1",
+        },
+        
+        # GPT-4o Series
+        "chatgpt-4o-latest": {
+            "name": "ChatGPT-4o (Latest)",
+            "description": "Latest ChatGPT version",
+        },
         "gpt-4o": {
             "name": "GPT-4o",
-            "description": "Най-мощния модел",
+            "description": "Multimodal model",
         },
+        "gpt-4o-mini": {
+            "name": "GPT-4o Mini",
+            "description": "Fast and cost-effective",
+        },
+        
+        # GPT-4 Turbo
         "gpt-4-turbo": {
             "name": "GPT-4 Turbo",
-            "description": "Бързо и способно",
+            "description": "Fast and powerful",
         },
+        
+        # GPT-3.5
         "gpt-3.5-turbo": {
             "name": "GPT-3.5 Turbo",
-            "description": "Лека и бързо",
+            "description": "Efficient and fast",
         },
     },
 }
 
 # Default model
-DEFAULT_COMPANY = "Google"
-DEFAULT_MODEL = "gemini-2.0-flash"
+DEFAULT_COMPANY = "OpenAI"
+DEFAULT_MODEL = "gpt-5-pro"
 
 # Generation config
 GENERATION_CONFIG = {
