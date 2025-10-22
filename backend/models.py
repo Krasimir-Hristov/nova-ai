@@ -7,7 +7,8 @@ class ChatMessage(BaseModel):
     """Model for chat message request."""
     message: str
     company: str = "Google"
-    model: str = "gemini-2.0-flash"
+    model: str = "gemini-2.5-pro"
+    session_id: str = "default"
 
 
 class ModelResponse(BaseModel):

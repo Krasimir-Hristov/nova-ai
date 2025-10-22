@@ -10,14 +10,18 @@ router = APIRouter(prefix="/api", tags=["chat"])
 
 @router.post("/chat/stream")
 async def chat_stream(data: ChatMessage):
-    """Streaming chat endpoint - returns response word by word."""
+    """Streaming chat endpoint with conversation memory - returns response word by word."""
     
     # Set the model if different from current
     if data.model != model_service.get_current_model_name():
         model_service.set_model(data.model)
     
     async def generate():
-        async for chunk in chat_service.stream_response(data.message, data.model):
+        async for chunk in chat_service.stream_response(
+            data.message, 
+            data.model,
+            data.session_id
+        ):
             yield chunk
     
     return StreamingResponse(
