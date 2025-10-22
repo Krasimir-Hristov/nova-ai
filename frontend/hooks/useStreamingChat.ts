@@ -49,7 +49,7 @@ export const useStreamingChat = ({
 
         let totalText = '';
         let buffer = '';
-        let processedChunks = new Set();
+        let chunkCounter = 0;
 
         while (true) {
           const { done, value } = await reader.read();
@@ -67,8 +67,6 @@ export const useStreamingChat = ({
 
               if (!jsonString) continue;
 
-              const chunkHash = `${jsonString}`;
-
               try {
                 const json = JSON.parse(jsonString);
 
@@ -82,7 +80,6 @@ export const useStreamingChat = ({
                       ?.content || '',
                     false
                   );
-                  processedChunks.clear();
                   onStreamComplete?.();
                   return;
                 }
@@ -90,18 +87,15 @@ export const useStreamingChat = ({
                 if (json.error) {
                   console.error('[FRONTEND LOG] ГРЕШКА:', json.error);
                   updateLastMessage(`❌ ГРЕШКА: ${json.error}`, false);
-                  processedChunks.clear();
                   onError?.(json.error);
                   return;
                 }
 
                 if (json.text) {
-                  if (!processedChunks.has(chunkHash)) {
-                    processedChunks.add(chunkHash);
-                    totalText += json.text;
-                    appendToLastMessage(json.text);
-                    console.log('[FRONTEND LOG] Chunk добавен:', json.text);
-                  }
+                  chunkCounter++;
+                  totalText += json.text;
+                  appendToLastMessage(json.text);
+                  console.log(`[FRONTEND LOG] Chunk #${chunkCounter}:`, json.text);
                 }
               } catch (e) {
                 console.error('[FRONTEND LOG] Грешка при парсване на JSON:', e);
