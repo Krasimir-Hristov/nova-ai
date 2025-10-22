@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 
 interface UseStreamingChatProps {
   selectedCompany: string;
@@ -21,9 +21,20 @@ export const useStreamingChat = ({
   onStreamComplete,
   onError,
 }: UseStreamingChatProps) => {
+  const abortControllerRef = useRef<AbortController | null>(null);
+
   const sendMessage = useCallback(
     async (userInput: string) => {
       try {
+        // Отмяни предишния стрийм ако съществува
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+        }
+
+        // Създай нов AbortController за текущия стрийм
+        abortControllerRef.current = new AbortController();
+        const signal = abortControllerRef.current.signal;
+
         const apiUrl = process.env.NEXT_PUBLIC_API_URL!;
         const response = await fetch(apiUrl, {
           method: 'POST',
@@ -33,6 +44,7 @@ export const useStreamingChat = ({
             company: selectedCompany,
             model: selectedModel,
           }),
+          signal,
         });
 
         if (!response.ok) throw new Error('Грешка при заявката');
@@ -107,6 +119,11 @@ export const useStreamingChat = ({
           }
         }
       } catch (error) {
+        // Не се беспокой за отмяна грешка
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.log('[FRONTEND LOG] Стрийма отменен');
+          return;
+        }
         console.error('[FRONTEND LOG] Грешка при свързване:', error);
         const errorMessage = {
           role: 'assistant',
@@ -127,5 +144,12 @@ export const useStreamingChat = ({
     ]
   );
 
-  return { sendMessage };
+  const stopStream = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      console.log('[FRONTEND LOG] Стопиране на стрийм от потребител');
+    }
+  }, []);
+
+  return { sendMessage, stopStream };
 };

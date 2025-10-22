@@ -37,7 +37,7 @@ export default function Home() {
   } = useModels();
 
   // Streaming chat logic
-  const { sendMessage } = useStreamingChat({
+  const { sendMessage, stopStream } = useStreamingChat({
     selectedCompany,
     selectedModel,
     messagesRef,
@@ -122,6 +122,7 @@ export default function Home() {
               onInputChange={setInput}
               onSendMessage={handleSendMessage}
               onKeyPress={handleKeyPress}
+              onStopStream={stopStream}
             />
           </div>
         </div>
