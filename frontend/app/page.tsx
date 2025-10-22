@@ -87,9 +87,12 @@ export default function Home() {
         <div className='flex flex-col gap-3'>
           {/* Font Size Selector */}
           <div className='flex justify-center'>
-            <FontSizeSelector fontSize={fontSize} onFontSizeChange={setFontSize} />
+            <FontSizeSelector
+              fontSize={fontSize}
+              onFontSizeChange={setFontSize}
+            />
           </div>
-          
+
           {/* Model Selector */}
           <div className='flex justify-center'>
             <ModelSelector

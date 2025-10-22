@@ -13,7 +13,10 @@ const FONT_SIZE_MAP = {
   xl: 'text-xl',
 };
 
-export const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, fontSize = 'base' }) => {
+export const ChatMessages: React.FC<ChatMessagesProps> = ({
+  messages,
+  fontSize = 'base',
+}) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Автоматично скролиране надолу когато има нови съобщения
@@ -51,7 +54,9 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, fontSize =
                       }`
                 }`}
               >
-                <p className={`${FONT_SIZE_MAP[fontSize]} leading-relaxed`}>{msg.content}</p>
+                <p className={`${FONT_SIZE_MAP[fontSize]} leading-relaxed`}>
+                  {msg.content}
+                </p>
                 {msg.isStreaming && (
                   <div className='flex items-center gap-1 mt-2'>
                     <span className='inline-block w-1 h-1 bg-blue-400 rounded-full animate-bounce'></span>
