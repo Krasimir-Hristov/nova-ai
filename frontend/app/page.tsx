@@ -86,6 +86,9 @@ export default function Home() {
 
   return (
     <div className='h-screen bg-linear-to-br from-black via-slate-950 to-black flex flex-col'>
+      {/* Header */}
+      <Header />
+      
       {/* Main Chat Area */}
       <div className='flex-1 flex flex-col overflow-hidden'>
         {/* Messages */}
