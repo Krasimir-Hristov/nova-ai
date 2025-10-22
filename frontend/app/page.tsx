@@ -51,6 +51,10 @@ export default function Home() {
     onError: () => {
       setLoading(false);
     },
+    onAbort: () => {
+      setLoading(false);
+      syncMessagesRef();
+    },
   });
 
   // Синхронизирай ref със state при промяна на messages

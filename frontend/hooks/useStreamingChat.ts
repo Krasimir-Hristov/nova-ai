@@ -9,6 +9,7 @@ interface UseStreamingChatProps {
   addAssistantMessage: (isStreaming?: boolean) => void;
   onStreamComplete?: () => void;
   onError?: (error: string) => void;
+  onAbort?: () => void;
 }
 
 export const useStreamingChat = ({
@@ -20,6 +21,7 @@ export const useStreamingChat = ({
   addAssistantMessage,
   onStreamComplete,
   onError,
+  onAbort,
 }: UseStreamingChatProps) => {
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -122,6 +124,7 @@ export const useStreamingChat = ({
         // Не се беспокой за отмяна грешка
         if (error instanceof Error && error.name === 'AbortError') {
           console.log('[FRONTEND LOG] Стрийма отменен');
+          onAbort?.();
           return;
         }
         console.error('[FRONTEND LOG] Грешка при свързване:', error);
@@ -141,6 +144,7 @@ export const useStreamingChat = ({
       addAssistantMessage,
       onStreamComplete,
       onError,
+      onAbort,
     ]
   );
 

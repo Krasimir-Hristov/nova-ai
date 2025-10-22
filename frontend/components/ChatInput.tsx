@@ -25,8 +25,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         onChange={(e) => onInputChange(e.target.value)}
         onKeyPress={onKeyPress}
         placeholder='Talk with NOVA...'
-        disabled={loading}
-        className='flex-1 p-4 rounded-lg bg-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50 transition-all border border-slate-700 focus:border-slate-500'
+        className='flex-1 p-4 rounded-lg bg-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 focus:ring-offset-black transition-all border border-slate-700 focus:border-slate-500'
       />
       <button
         onClick={loading && onStopStream ? onStopStream : onSendMessage}
