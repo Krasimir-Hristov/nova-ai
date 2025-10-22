@@ -100,17 +100,11 @@ export const useStreamingChat = ({
                     processedChunks.add(chunkHash);
                     totalText += json.text;
                     appendToLastMessage(json.text);
-                    console.log(
-                      '[FRONTEND LOG] Chunk добавен:',
-                      json.text
-                    );
+                    console.log('[FRONTEND LOG] Chunk добавен:', json.text);
                   }
                 }
               } catch (e) {
-                console.error(
-                  '[FRONTEND LOG] Грешка при парсване на JSON:',
-                  e
-                );
+                console.error('[FRONTEND LOG] Грешка при парсване на JSON:', e);
               }
             }
           }
