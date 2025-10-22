@@ -28,8 +28,8 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
     <div className='flex-1 overflow-y-auto'>
       {/* Welcome Message - shows when no messages */}
       {messages.length === 0 && (
-        <div className='h-full grid place-items-center'>
-          <h2 className='font-black bg-linear-to-r from-blue-400 to-blue-700 bg-clip-text text-transparent tracking-[0.8em] leading-[0.9] text-[13vw] whitespace-nowrap'>
+        <div className='h-full flex items-center justify-center'>
+          <h2 className='font-black bg-linear-to-r from-blue-400 to-blue-700 bg-clip-text text-transparent tracking-[0.4em] leading-[0.9] text-[13vw] whitespace-nowrap text-center'>
             NOVA
           </h2>
         </div>
