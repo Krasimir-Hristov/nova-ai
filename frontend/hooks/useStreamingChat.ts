@@ -95,7 +95,10 @@ export const useStreamingChat = ({
                   chunkCounter++;
                   totalText += json.text;
                   appendToLastMessage(json.text);
-                  console.log(`[FRONTEND LOG] Chunk #${chunkCounter}:`, json.text);
+                  console.log(
+                    `[FRONTEND LOG] Chunk #${chunkCounter}:`,
+                    json.text
+                  );
                 }
               } catch (e) {
                 console.error('[FRONTEND LOG] Грешка при парсване на JSON:', e);
