@@ -24,9 +24,52 @@ SYSTEM_PROMPT = """Ти си NOVA - Personal Assistant. Ти си полезен
 # Available models organized by company
 AVAILABLE_MODELS = {
     "Google": {
+        # Gemini 2.5 Series - Latest & Most Powerful
+        "gemini-2.5-pro": {
+            "name": "Gemini 2.5 Pro",
+            "description": "Most powerful Gemini (1M tokens)",
+        },
+        "gemini-2.5-flash": {
+            "name": "Gemini 2.5 Flash",
+            "description": "Fast multimodal (1M tokens)",
+        },
+        "gemini-2.5-flash-lite": {
+            "name": "Gemini 2.5 Flash-Lite",
+            "description": "Lightweight and efficient",
+        },
+        
+        # Gemini 2.0 Series
         "gemini-2.0-flash": {
             "name": "Gemini 2.0 Flash",
-            "description": "Fast and efficient",
+            "description": "Fast and versatile",
+        },
+        "gemini-2.0-flash-lite": {
+            "name": "Gemini 2.0 Flash-Lite",
+            "description": "Compact version",
+        },
+        "gemini-2.0-flash-thinking-exp": {
+            "name": "Gemini 2.0 Flash Thinking",
+            "description": "Reasoning experimental",
+        },
+        
+        # Gemini Special Models
+        "gemini-2.5-computer-use-preview-10-2025": {
+            "name": "Gemini 2.5 Computer Use",
+            "description": "Computer interaction preview",
+        },
+        "learnlm-2.0-flash-experimental": {
+            "name": "LearnLM 2.0 Flash",
+            "description": "Learning-focused model",
+        },
+        
+        # Latest Aliases (auto-update to newest)
+        "gemini-pro-latest": {
+            "name": "Gemini Pro (Latest)",
+            "description": "Latest Pro version",
+        },
+        "gemini-flash-latest": {
+            "name": "Gemini Flash (Latest)",
+            "description": "Latest Flash version",
         },
     },
     "OpenAI": {
@@ -105,8 +148,8 @@ AVAILABLE_MODELS = {
 }
 
 # Default model
-DEFAULT_COMPANY = "OpenAI"
-DEFAULT_MODEL = "gpt-5-pro"
+DEFAULT_COMPANY = "Google"
+DEFAULT_MODEL = "gemini-2.5-pro"
 
 # Generation config
 GENERATION_CONFIG = {
