@@ -152,6 +152,12 @@ export const useStreamingChat = ({
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       console.log('[FRONTEND LOG] Стопиране на стрийм от потребител');
+      
+      // Tell backend to cancel stream
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL!.replace('/chat/stream', '');
+      fetch(`${apiBaseUrl}/cancel-stream`, {
+        method: 'POST',
+      }).catch(err => console.error('[FRONTEND LOG] Грешка при cancel:', err));
     }
   }, []);
 

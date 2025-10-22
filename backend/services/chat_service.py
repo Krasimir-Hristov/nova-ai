@@ -6,11 +6,21 @@ from services.model_service import ModelService
 
 
 class ChatService:
-    """Service for handling chat streaming and responses."""
+    """Service for handling chat operations."""
     
     def __init__(self, model_service: ModelService):
         """Initialize the chat service with a model service."""
         self.model_service = model_service
+        self.cancel_requested = False  # Flag for stream cancellation
+    
+    def cancel_current_stream(self):
+        """Signal to cancel the current streaming response."""
+        self.cancel_requested = True
+        print(
+            "[BACKEND LOG] Stream cancellation requested",
+            file=sys.stdout,
+            flush=True
+        )
     
     async def stream_response(self, message: str, model_name: str = "gemini-2.0-flash"):
         """
@@ -23,6 +33,9 @@ class ChatService:
         Yields:
             JSON formatted SSE data
         """
+        # Reset cancellation flag for new stream
+        self.cancel_requested = False
+        
         print(
             f"\n[BACKEND LOG] Received message: {message}",
             file=sys.stdout,
@@ -73,6 +86,15 @@ class ChatService:
         sent_chunks = set()
         
         for chunk in response:
+            # CHECK CANCELLATION FIRST
+            if self.cancel_requested:
+                print(
+                    "[BACKEND LOG] Google stream cancelled during generation",
+                    file=sys.stdout,
+                    flush=True
+                )
+                break
+            
             if chunk.text:
                 chunk_count += 1
                 chunk_id = id(chunk)
@@ -126,6 +148,15 @@ class ChatService:
         chunk_count = 0
         
         for chunk in response:
+            # CHECK CANCELLATION FIRST
+            if self.cancel_requested:
+                print(
+                    "[BACKEND LOG] OpenAI stream cancelled during generation",
+                    file=sys.stdout,
+                    flush=True
+                )
+                break
+            
             # OpenAI streams chunks with delta.content that can be None
             content = chunk.choices[0].delta.content if chunk.choices[0].delta else None
             

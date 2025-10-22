@@ -4,7 +4,7 @@ import sys
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config import CORS_ORIGINS
-from routes import models_router, chat_router
+from routes import models_router, chat_router, cancel_router
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -25,6 +25,7 @@ app.add_middleware(
 # Include routers
 app.include_router(models_router)
 app.include_router(chat_router)
+app.include_router(cancel_router)
 
 
 @app.get("/")
