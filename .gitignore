@@ -4,17 +4,21 @@
 *.swp
 *.swo
 *~
+Thumbs.db
 
 # --- IDEs / Editors ---
-.vscode/
 .idea/
 *.sublime-project
 *.sublime-workspace
+# Note: .vscode settings are kept for team consistency
 
 # --- Environment variables ---
 .env
 .env.local
 .env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # --- Frontend (Next.js / Node.js) ---
 frontend/node_modules/
@@ -26,20 +30,30 @@ frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
-# --- Backend (Python) ---
+# --- Python / Backend ---
 backend/venv/
+backend/.venv/
+backend/ENV/
 backend/__pycache__/
+backend/**/__pycache__/
 backend/*.pyc
-backend/.pytest_cache/
-backend/dist/
+backend/*.pyo
+backend/*.pyd
+backend/.Python
 backend/build/
+backend/develop-eggs/
+backend/dist/
+backend/downloads/
+backend/eggs/
+backend/.eggs/
+backend/lib/
+backend/lib64/
+backend/parts/
+backend/sdist/
+backend/var/
+backend/wheels/
 backend/*.egg-info/
+backend/.installed.cfg
+backend/*.egg
+backend/.pytest_cache/
 
-# --- OS ---
-Thumbs.db
-.DS_Store
-
-# --- Local development ---
-.env.development.local
-.env.test.local
-.env.production.local
