@@ -9,6 +9,9 @@ load_dotenv()
 # Google Gemini API Configuration
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
+# OpenAI API Configuration
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
 # System prompt for NOVA
 SYSTEM_PROMPT = """Ти си NOVA - Personal Assistant. Ти си полезен, интелигентен AI асистент.
 Отговаряй на български език. Когато отговаряш:
@@ -24,6 +27,20 @@ AVAILABLE_MODELS = {
         "gemini-2.0-flash": {
             "name": "Gemini 2.0 Flash",
             "description": "Бързо и мощно",
+        },
+    },
+    "OpenAI": {
+        "gpt-4o": {
+            "name": "GPT-4o",
+            "description": "Най-мощния модел",
+        },
+        "gpt-4-turbo": {
+            "name": "GPT-4 Turbo",
+            "description": "Бързо и способно",
+        },
+        "gpt-3.5-turbo": {
+            "name": "GPT-3.5 Turbo",
+            "description": "Лека и бързо",
         },
     },
 }

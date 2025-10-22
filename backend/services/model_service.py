@@ -2,7 +2,8 @@
 
 import sys
 import google.generativeai as genai
-from config import AVAILABLE_MODELS, SYSTEM_PROMPT, GENERATION_CONFIG, GOOGLE_API_KEY
+from openai import OpenAI
+from config import AVAILABLE_MODELS, SYSTEM_PROMPT, GENERATION_CONFIG, GOOGLE_API_KEY, OPENAI_API_KEY
 
 
 class ModelService:
@@ -12,8 +13,13 @@ class ModelService:
         """Initialize the model service."""
         # Configure Gemini API
         genai.configure(api_key=GOOGLE_API_KEY)
+        
+        # Initialize OpenAI client
+        self.openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
+        
         self.current_model = None
         self.current_model_name = None
+        self.current_model_type = None  # 'google' or 'openai'
     
     def get_available_models(self) -> dict:
         """Get all available models organized by company."""
@@ -43,13 +49,30 @@ class ModelService:
             )
         
         try:
-            model = genai.GenerativeModel(
-                model_name,
-                system_instruction=SYSTEM_PROMPT,
-                generation_config=GENERATION_CONFIG
-            )
+            # Determine which provider the model belongs to
+            model_type = None
+            for company, models in AVAILABLE_MODELS.items():
+                if model_name in models:
+                    model_type = company.lower()
+                    break
+            
+            if model_type == "google":
+                model = genai.GenerativeModel(
+                    model_name,
+                    system_instruction=SYSTEM_PROMPT,
+                    generation_config=GENERATION_CONFIG
+                )
+            elif model_type == "openai":
+                if not self.openai_client:
+                    raise ValueError("OpenAI API key not configured")
+                model = self.openai_client
+            else:
+                raise ValueError(f"Unknown model type for {model_name}")
+            
             self.current_model = model
             self.current_model_name = model_name
+            self.current_model_type = model_type
+            
             print(
                 f"[BACKEND LOG] Model {model_name} successfully initialized",
                 file=sys.stdout,

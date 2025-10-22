@@ -35,53 +35,17 @@ class ChatService:
         )
         
         try:
-            # Get the selected model
-            model = self.model_service.get_current_model()
+            model_type = self.model_service.current_model_type
             
-            # Generate response with streaming
-            response = model.generate_content(
-                message,
-                stream=True
-            )
-            
-            chunk_count = 0
-            sent_chunks = set()
-            
-            for chunk in response:
-                if chunk.text:
-                    chunk_count += 1
-                    chunk_id = id(chunk)
-                    
-                    # Check if chunk was already sent
-                    if chunk_id not in sent_chunks:
-                        sent_chunks.add(chunk_id)
-                        
-                        # Send as JSON
-                        message_data = json.dumps(
-                            {"text": chunk.text},
-                            ensure_ascii=False
-                        )
-                        print(
-                            f"[BACKEND LOG] Chunk #{chunk_count}: {message_data[:100]}...",
-                            file=sys.stdout,
-                            flush=True
-                        )
-                        yield f"data: {message_data}\n\n"
-                    else:
-                        print(
-                            f"[BACKEND LOG] Duplicate chunk #{chunk_count} - SKIPPED",
-                            file=sys.stdout,
-                            flush=True
-                        )
-            
-            print(
-                f"[BACKEND LOG] Stream finished. Total {chunk_count} chunks",
-                file=sys.stdout,
-                flush=True
-            )
-            # Signal completion
-            yield "data: {\"done\": true}\n\n"
-            
+            if model_type == "google":
+                for chunk in self._stream_google(message, model_name):
+                    yield chunk
+            elif model_type == "openai":
+                for chunk in self._stream_openai(message, model_name):
+                    yield chunk
+            else:
+                raise ValueError(f"Unknown model type: {model_type}")
+                
         except Exception as e:
             error_msg = json.dumps(
                 {"error": str(e)},
@@ -93,3 +57,95 @@ class ChatService:
                 flush=True
             )
             yield f"data: {error_msg}\n\n"
+    
+    def _stream_google(self, message: str, model_name: str):
+        """Stream response from Google Gemini."""
+        # Get the selected model
+        model = self.model_service.get_current_model()
+        
+        # Generate response with streaming
+        response = model.generate_content(
+            message,
+            stream=True
+        )
+        
+        chunk_count = 0
+        sent_chunks = set()
+        
+        for chunk in response:
+            if chunk.text:
+                chunk_count += 1
+                chunk_id = id(chunk)
+                
+                # Check if chunk was already sent
+                if chunk_id not in sent_chunks:
+                    sent_chunks.add(chunk_id)
+                    
+                    # Send as JSON
+                    message_data = json.dumps(
+                        {"text": chunk.text},
+                        ensure_ascii=False
+                    )
+                    print(
+                        f"[BACKEND LOG] Chunk #{chunk_count}: {message_data[:100]}...",
+                        file=sys.stdout,
+                        flush=True
+                    )
+                    yield f"data: {message_data}\n\n"
+                else:
+                    print(
+                        f"[BACKEND LOG] Duplicate chunk #{chunk_count} - SKIPPED",
+                        file=sys.stdout,
+                        flush=True
+                    )
+        
+        print(
+            f"[BACKEND LOG] Stream finished. Total {chunk_count} chunks",
+            file=sys.stdout,
+            flush=True
+        )
+        # Signal completion
+        yield "data: {\"done\": true}\n\n"
+    
+    def _stream_openai(self, message: str, model_name: str):
+        """Stream response from OpenAI."""
+        from config import SYSTEM_PROMPT
+        
+        client = self.model_service.openai_client
+        
+        response = client.chat.completions.create(
+            model=model_name,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": message}
+            ],
+            stream=True,
+            temperature=0.7,
+        )
+        
+        chunk_count = 0
+        
+        for chunk in response:
+            if chunk.choices[0].delta.content:
+                chunk_count += 1
+                text = chunk.choices[0].delta.content
+                
+                # Send as JSON
+                message_data = json.dumps(
+                    {"text": text},
+                    ensure_ascii=False
+                )
+                print(
+                    f"[BACKEND LOG] Chunk #{chunk_count}: {message_data[:100]}...",
+                    file=sys.stdout,
+                    flush=True
+                )
+                yield f"data: {message_data}\n\n"
+        
+        print(
+            f"[BACKEND LOG] Stream finished. Total {chunk_count} chunks",
+            file=sys.stdout,
+            flush=True
+        )
+        # Signal completion
+        yield "data: {\"done\": true}\n\n"

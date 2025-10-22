@@ -2,23 +2,19 @@
 
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
-from services.model_service import ModelService
-from services.chat_service import ChatService
+from services_instance import chat_service, model_service
 from models import ChatMessage
 
 router = APIRouter(prefix="/api", tags=["chat"])
-
-# Initialize services
-model_service = ModelService()
-chat_service = ChatService(model_service)
-
-# Initialize default model
-model_service.initialize_model()
 
 
 @router.post("/chat/stream")
 async def chat_stream(data: ChatMessage):
     """Streaming chat endpoint - returns response word by word."""
+    
+    # Set the model if different from current
+    if data.model != model_service.get_current_model_name():
+        model_service.set_model(data.model)
     
     async def generate():
         async for chunk in chat_service.stream_response(data.message, data.model):

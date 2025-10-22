@@ -1,15 +1,11 @@
 """Routes for model management endpoints."""
 
 from fastapi import APIRouter, HTTPException
-from services.model_service import ModelService
+from services_instance import model_service
 from models import ModelResponse
-from config import DEFAULT_COMPANY, DEFAULT_MODEL
+from config import DEFAULT_COMPANY
 
 router = APIRouter(prefix="/api", tags=["models"])
-model_service = ModelService()
-
-# Initialize default model
-model_service.initialize_model(DEFAULT_MODEL)
 
 
 @router.get("/models", response_model=ModelResponse)
