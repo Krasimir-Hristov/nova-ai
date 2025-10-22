@@ -5,24 +5,24 @@ export const Header: React.FC = () => {
     <div className='border-b border-slate-700/50 bg-linear-to-r from-black via-slate-950 to-black'>
       <div className='max-w-7xl mx-auto px-6 py-4 flex items-center justify-between'>
         {/* Left - Logo/Brand */}
-        <div className='flex items-center gap-3'>
-          <div className='flex flex-col'>
-            <h1 className='text-2xl font-bold bg-linear-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent tracking-widest'>
-              NOVA
-            </h1>
-            <p className='text-xs text-slate-500 -mt-0.5'>AI Assistant</p>
-          </div>
+        <div className='flex items-center gap-4'>
+          <h1 className='text-4xl font-black bg-linear-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent tracking-[0.3em]'>
+            NOVA
+          </h1>
+          <span className='text-[20px] text-slate-600 font-medium px-2 py-0.5 rounded bg-slate-800/30 border border-slate-700/50'>
+            AI Assistant
+          </span>
         </div>
 
         {/* Right - Info/Settings */}
         <div className='flex items-center gap-4'>
-          <div className='text-xs text-slate-500 hidden sm:block'>
-            Интелигентен диалог
+          <div className='text-2xl text-slate-500 hidden sm:block'>
+            Krasimir
           </div>
           {/* Settings icon placeholder */}
-          <button className='w-8 h-8 rounded-lg hover:bg-slate-800/50 flex items-center justify-center transition-colors group'>
+          <button className='w-8 h-8 rounded-lg cursor-pointer  hover:bg-slate-800/50 flex items-center justify-center transition-colors group'>
             <svg
-              className='w-4 h-4 text-slate-400 group-hover:text-slate-300 transition-colors'
+              className='w-6 h-6 text-slate-400 group-hover:text-slate-300 transition-colors cursor-pointer'
               fill='none'
               stroke='currentColor'
               viewBox='0 0 24 24'
