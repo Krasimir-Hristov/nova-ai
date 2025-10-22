@@ -86,40 +86,15 @@ export default function Home() {
 
   return (
     <div className='h-screen bg-linear-to-br from-black via-slate-950 to-black flex flex-col'>
-      {/* Header with Model Selector and Font Size */}
-      <div className='border-b border-slate-700 p-4 bg-linear-to-r from-black via-slate-950 to-black'>
-        <div className='flex flex-col gap-3'>
-          {/* Font Size Selector */}
-          <div className='flex justify-center'>
-            <FontSizeSelector
-              fontSize={fontSize}
-              onFontSizeChange={setFontSize}
-            />
-          </div>
-
-          {/* Model Selector */}
-          <div className='flex justify-center'>
-            <ModelSelector
-              selectedCompany={selectedCompany}
-              selectedModel={selectedModel}
-              companies={getCompanies()}
-              modelsForCompany={getModelsForCompany(selectedCompany)}
-              onCompanyChange={setSelectedCompany}
-              onModelChange={setSelectedModel}
-              compact={true}
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Main Chat Area */}
       <div className='flex-1 flex flex-col overflow-hidden'>
         {/* Messages */}
         <ChatMessages messages={messages} fontSize={fontSize} />
 
-        {/* Input Area - ChatGPT Style */}
-        <div className='border-t border-slate-700 bg-linear-to-r from-black via-slate-950 to-black p-6 flex justify-center'>
-          <div className='w-full max-w-3xl'>
+        {/* Input Area with Controls */}
+        <div className='border-t border-slate-700 bg-linear-to-r from-black via-slate-950 to-black p-6'>
+          <div className='max-w-3xl mx-auto space-y-4'>
+            {/* Chat Input */}
             <ChatInput
               input={input}
               loading={loading}
@@ -128,6 +103,30 @@ export default function Home() {
               onKeyPress={handleKeyPress}
               onStopStream={stopStream}
             />
+            
+            {/* Controls Row - Font Size & Model Selector */}
+            <div className='flex items-center justify-between gap-4 px-2'>
+              {/* Font Size Selector */}
+              <div className='shrink-0'>
+                <FontSizeSelector
+                  fontSize={fontSize}
+                  onFontSizeChange={setFontSize}
+                />
+              </div>
+
+              {/* Model Selector */}
+              <div className='shrink-0'>
+                <ModelSelector
+                  selectedCompany={selectedCompany}
+                  selectedModel={selectedModel}
+                  companies={getCompanies()}
+                  modelsForCompany={getModelsForCompany(selectedCompany)}
+                  onCompanyChange={setSelectedCompany}
+                  onModelChange={setSelectedModel}
+                  compact={true}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
