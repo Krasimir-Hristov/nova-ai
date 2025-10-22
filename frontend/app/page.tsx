@@ -5,12 +5,14 @@ import { Header } from '@/components/Header';
 import { ChatMessages } from '@/components/ChatMessages';
 import { ChatInput } from '@/components/ChatInput';
 import { ModelSelector } from '@/components/ModelSelector';
+import { FontSizeSelector } from '@/components/FontSizeSelector';
 import { useChatMessages } from '@/hooks/useChatMessages';
 import { useModels } from '@/hooks/useModels';
 import { useStreamingChat } from '@/hooks/useStreamingChat';
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
+  const [fontSize, setFontSize] = useState<'sm' | 'base' | 'lg' | 'xl'>('base');
 
   // Chat messages logic
   const {
@@ -80,23 +82,33 @@ export default function Home() {
 
   return (
     <div className='h-screen bg-linear-to-br from-black via-slate-950 to-black flex flex-col'>
-      {/* Header with Model Selector */}
-      <div className='border-b border-slate-700 p-4 bg-linear-to-r from-black via-slate-950 to-black flex justify-center'>
-        <ModelSelector
-          selectedCompany={selectedCompany}
-          selectedModel={selectedModel}
-          companies={getCompanies()}
-          modelsForCompany={getModelsForCompany(selectedCompany)}
-          onCompanyChange={setSelectedCompany}
-          onModelChange={setSelectedModel}
-          compact={true}
-        />
+      {/* Header with Model Selector and Font Size */}
+      <div className='border-b border-slate-700 p-4 bg-linear-to-r from-black via-slate-950 to-black'>
+        <div className='flex flex-col gap-3'>
+          {/* Font Size Selector */}
+          <div className='flex justify-center'>
+            <FontSizeSelector fontSize={fontSize} onFontSizeChange={setFontSize} />
+          </div>
+          
+          {/* Model Selector */}
+          <div className='flex justify-center'>
+            <ModelSelector
+              selectedCompany={selectedCompany}
+              selectedModel={selectedModel}
+              companies={getCompanies()}
+              modelsForCompany={getModelsForCompany(selectedCompany)}
+              onCompanyChange={setSelectedCompany}
+              onModelChange={setSelectedModel}
+              compact={true}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Main Chat Area */}
       <div className='flex-1 flex flex-col overflow-hidden'>
         {/* Messages */}
-        <ChatMessages messages={messages} />
+        <ChatMessages messages={messages} fontSize={fontSize} />
 
         {/* Input Area - ChatGPT Style */}
         <div className='border-t border-slate-700 bg-linear-to-r from-black via-slate-950 to-black p-6 flex justify-center'>

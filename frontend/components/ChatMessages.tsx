@@ -3,9 +3,17 @@ import { Message } from '@/hooks/useChatMessages';
 
 interface ChatMessagesProps {
   messages: Message[];
+  fontSize?: 'sm' | 'base' | 'lg' | 'xl';
 }
 
-export const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
+const FONT_SIZE_MAP = {
+  sm: 'text-sm',
+  base: 'text-base',
+  lg: 'text-lg',
+  xl: 'text-xl',
+};
+
+export const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, fontSize = 'base' }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Автоматично скролиране надолу когато има нови съобщения
@@ -43,7 +51,7 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
                       }`
                 }`}
               >
-                <p className='text-lg leading-relaxed'>{msg.content}</p>
+                <p className={`${FONT_SIZE_MAP[fontSize]} leading-relaxed`}>{msg.content}</p>
                 {msg.isStreaming && (
                   <div className='flex items-center gap-1 mt-2'>
                     <span className='inline-block w-1 h-1 bg-blue-400 rounded-full animate-bounce'></span>
